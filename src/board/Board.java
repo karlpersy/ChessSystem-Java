@@ -23,16 +23,21 @@ public class Board {
 	public void setColumns(Integer columns) {
 		this.columns = columns;
 	}
-	//METODO PIECE QUE RETORNA  MATRIZ DA Piece NA LINHA E COLUNA
+	//METODO (Piece) QUE RETORNA A MATRIZ(piece) NA LINHA(row) E COLUNA(column)
 	public Piece piece (int row, int column){
 		return pieces [row][column];
 	}
-	//METODO PPiece COM SOBRECARGA 
+	//METODO (Piece) COM SOBRECARGA 
 	public Piece piece (Position position) {
 		return pieces[position.getRow()][position.getColumn()];
 		
 	}
-     
+	//METODO RESPONSAVEL POR COLOCAR A PEÇA (Piece piece) NA POSIÇÃO (Position position) do TABULEIRO (Board)
+    public void placePiece (Piece piece,Position position) {
+    	pieces [position.getRow()][position.getColumn()] = piece;
+    	 piece.position = position;
+    	
+    }
 
 
 }

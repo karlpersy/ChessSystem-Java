@@ -1,7 +1,7 @@
 package chess;
-
-public enum Color {
-	WHITE,
-	BLACK,
+	
+	public enum Color {
+		BLACK,
+		WHITE,
 
 }
