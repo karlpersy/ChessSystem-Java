@@ -23,7 +23,16 @@ public class Board {
 	public void setColumns(Integer columns) {
 		this.columns = columns;
 	}
-
+	//METODO PIECE QUE RETORNA  MATRIZ DA Piece NA LINHA E COLUNA
+	public Piece piece (int row, int column){
+		return pieces [row][column];
+	}
+	//METODO PPiece COM SOBRECARGA 
+	public Piece piece (Position position) {
+		return pieces[position.getRow()][position.getColumn()];
+		
+	}
+     
 
 
 }
