@@ -26,9 +26,14 @@ public class UI {
 	public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
 	public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
 	public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
-	public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+	public static final String ANSI_CYAN_BACKGROUND ="\u001B[46m";
 	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+	//METODO PARA LIMPAR A TELA DEPOIS DE MOVER A PEÇA //...StarckOverlow
+		public static void clearScreen () {
+			System.out.println("\033[H\033[2J");
+			System.out.flush();
+		}
 	//METODO PARA LER A POSIÇÃO DO XADREZ(CONVERTENDO PARA INTEIRO)
 	public static ChessPosition readChessPosittion(Scanner sc) {
 		try {
