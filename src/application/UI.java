@@ -1,7 +1,10 @@
 package application;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import chess.ChessMatch;
 import chess.ChessPiece;
@@ -37,8 +40,10 @@ public class UI {
 	}
 
 	// METODO PARA INICIAR UMA NOVA PARTIDA (IMPRIMINDO NA TELA UMA NEW MATCH)
-	public static void printMatch(ChessMatch chessMatch) {
+	public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
 		printBoard(chessMatch.getPieces());
+		System.out.println();
+		printCapturedPieces(captured);
 		System.out.println();
 		System.out.println("Number play: " + chessMatch.getTurn() + " LET'S GO!");
 		System.out.println("It's your turn to play player: " + chessMatch.getCurrentplayer());
@@ -81,20 +86,38 @@ public class UI {
 
 	}
 
-	private static void printPiece(ChessPiece piece, boolean background) {
-		if (background) {
-			System.out.print(ANSI_GREEN_BACKGROUND);
-		}
-
-		if (piece == null) {
-			System.out.print("-" + ANSI_RESET);
-		} else {
-			if (piece.getColor() == Color.WHITE) {
-				System.out.print(ANSI_RED + piece + ANSI_RESET);
-			} else {
-				System.out.print(ANSI_YELLOW + piece + ANSI_RESET);
-			}
-		}
-		System.out.print(" ");
+	// METODO COM LIST<> PARA IMPRIMIR PEÇAS CAPTURADAS NA TELA
+	private static void printCapturedPieces(List<ChessPiece> captured) {
+		// LAMBDa
+		List<ChessPiece> red = captured.stream().filter(x -> x.getColor() == Color.RED).collect(Collectors.toList());
+		List<ChessPiece> blue = captured.stream().filter(x -> x.getColor() == Color.BLUE).collect(Collectors.toList());
+		System.out.println("CAPTURED PIECES: ");
+		System.out.println("Red: ");
+		System.out.println(ANSI_RED);
+		System.out.println(Arrays.toString(red.toArray()));
+		System.out.println(ANSI_RESET);
+		System.out.println("Blue: ");
+		System.out.println(ANSI_BLUE);
+		System.out.println(Arrays.toString(blue.toArray()));
+		System.out.println(ANSI_RESET);
 	}
+
+	private static void printPiece(ChessPiece piece, boolean background) {
+	
+			if (background) {
+				System.out.print(ANSI_GREEN_BACKGROUND);
+			}
+			if (piece == null) {
+				System.out.print("-" + ANSI_RESET);
+			}
+			else if (piece.getColor() == Color.BLUE) {
+				System.out.print(ANSI_RED + piece + ANSI_RESET);
+			}
+	
+			else {
+				System.out.print(ANSI_BLUE + piece + ANSI_RESET);
+			}
+			System.out.print(" ");
+	}
+
 }

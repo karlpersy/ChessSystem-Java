@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import board.Board;
 import board.Piece;
 import board.Position;
@@ -7,14 +10,18 @@ import chess.piece.King;
 import chess.piece.Rook;
 
 public class ChessMatch {
+
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
 
+	private List<Piece> piecesOnTheBoard = new ArrayList<>();
+	private List<Piece> capturedPieces = new ArrayList<>();
+
 	public ChessMatch() {
 		board = new Board(8, 8);
 		turn = 1;
-		currentPlayer = Color.WHITE;
+		currentPlayer = Color.BLUE;
 		initialSetup();
 
 	}
@@ -39,7 +46,7 @@ public class ChessMatch {
 		return mat;
 	}
 
-	// OPERAÇÃO que RETORNA OS MOVIMENTOS POSSIVEIS PARA A PEÇA
+	// OPERAÇÃO QUE RETORNA OS MOVIMENTOS POSSIVEIS PARA A PEÇA
 	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
 		Position position = sourcePosition.toPosition();
 		// VALIDANDO POSIÇÕES
@@ -55,16 +62,20 @@ public class ChessMatch {
 		validateTargetPosition(source, target);
 		Piece capturePiece = makeMove(source, target);
 		// CHAMANDO PROXIMO JOGADOR DEPOIS DE EXECUTAR A JOGADA
-		nextPlayer();
+		nextTurnPlayer();
 		return (ChessPiece) capturePiece;
 	}
 
 	// MOVIMENTO DAS PEÇAS (POSIÇÃO DE ORIGEM PARA POSIÇÃO DE DESTINO)
 	private Piece makeMove(Position source, Position target) {
 		Piece pc = board.removePiece(source);
-		Piece capturePiece = board.removePiece(target);
+		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(pc, target);
-		return capturePiece;
+		if (capturedPiece != null) {
+			piecesOnTheBoard.remove(capturedPiece);
+			capturedPieces.add(capturedPiece);
+		}
+		return capturedPiece;
 	}
 
 	// VALIDANDO AS POSIÇÕES DE ORIGEM
@@ -80,8 +91,9 @@ public class ChessMatch {
 			if (!board.piece(position).isThereAnyPossibleMove()) {
 				throw new ChessException("There is no possible moves  for chosen piece!");
 			}
-	}
+		}
 
+	//ATENÇÃO ESSE METODO PRECISARÁ SER REVISTO NO ENCERRAMENTO, PODE OCORRER ERRO DE LOGICA!
 	private void validateTargetPosition(Position source, Position target) {
 		if (!board.piece(source).possibleMove(target)) {
 			throw new ChessException("You can't move the piece to the chosen position.");
@@ -90,27 +102,29 @@ public class ChessMatch {
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
+		piecesOnTheBoard.add(piece);
 	}
 
-	private void nextPlayer() {
+	// CHAMANDO PROXIMO JOGADOR
+	private void nextTurnPlayer() {
 		turn++;
-		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
+		currentPlayer = (currentPlayer == Color.BLUE) ? Color.RED : Color.BLUE;
 	}
 
 	public void initialSetup() {
-		placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('c', 1, new King(board, Color.WHITE));
-		placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-		placeNewPiece('e', 1, new Rook(board, Color.WHITE));
-		placeNewPiece('d', 1, new King(board, Color.WHITE));
+		placeNewPiece('c', 2, new Rook(board, Color.BLUE));
+		placeNewPiece('c', 1, new King(board, Color.BLUE));
+		placeNewPiece('d', 2, new Rook(board, Color.BLUE));
+		placeNewPiece('e', 2, new Rook(board, Color.BLUE));
+		placeNewPiece('e', 1, new Rook(board, Color.BLUE));
+		placeNewPiece('d', 1, new King(board, Color.BLUE));
 
-		placeNewPiece('c', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('c', 8, new Rook(board, Color.BLACK));
-		placeNewPiece('d', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('e', 7, new Rook(board, Color.BLACK));
-		placeNewPiece('e', 8, new Rook(board, Color.BLACK));
-		placeNewPiece('d', 8, new King(board, Color.BLACK));
+		placeNewPiece('c', 7, new Rook(board, Color.RED));
+		placeNewPiece('c', 8, new Rook(board, Color.RED));
+		placeNewPiece('d', 7, new Rook(board, Color.RED));
+		placeNewPiece('e', 7, new Rook(board, Color.RED));
+		placeNewPiece('e', 8, new Rook(board, Color.RED));
+		placeNewPiece('d', 8, new King(board, Color.RED));
 		;
 	}
 }

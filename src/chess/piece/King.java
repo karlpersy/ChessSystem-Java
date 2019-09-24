@@ -18,8 +18,8 @@ public class King extends ChessPiece {
 	}
 
 	private boolean validMovement(Position position) {
-		ChessPiece pc = (ChessPiece) getBoard().piece(position);
-		return pc == null || pc.getColor() != getColor();
+		ChessPiece pc = (ChessPiece)getBoard().piece(position);
+		return pc.getColor() != getColor() || pc == null  ;
 	}
 
 	@Override
