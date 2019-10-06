@@ -45,8 +45,11 @@ public class UI {
 		System.out.println();
 		printCapturedPieces(captured);
 		System.out.println();
-		System.out.println("Number play: " + chessMatch.getTurn() + " LET'S GO!");
+		System.out.println("Number play " + chessMatch.getTurn() + " LET'S GO!");
 		System.out.println("It's your turn to play player: " + chessMatch.getCurrentplayer());
+		if (chessMatch.getXeque()) {
+			System.out.println("CHECK!");
+		}
 	}
 
 	// METODO PARA LER A POSIÇÃO DO XADREZ(CONVERTENDO PARA INTEIRO)
@@ -60,7 +63,7 @@ public class UI {
 			throw new InputMismatchException("ERROR! INVALID POSITION! Choose between a1 and h8");
 		}
 	}
-
+//IMPRIME O XADREZ COM AS PEÇAS
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -72,7 +75,7 @@ public class UI {
 		System.out.println("  a b c d e f g h");
 
 	}
-
+	//IMPRIME NOVAMENTE MOSTRANDO OS MOVIMENTOS POSSIVEIS
 	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -86,38 +89,42 @@ public class UI {
 
 	}
 
+	private static void printPiece(ChessPiece piece, boolean background) {
+
+		if (background) {
+			System.out.print(ANSI_YELLOW_BACKGROUND);
+		}
+		if (piece == null) {
+			System.out.print("-" + ANSI_RESET);
+		}
+
+		else {
+			if (piece.getColor() == Color.BLUE) {
+
+				System.out.print(ANSI_BLUE + piece + ANSI_RESET);
+
+			} else {
+				System.out.print(ANSI_RED + piece + ANSI_RESET);
+			}
+		}
+		System.out.print(" ");
+	}
+
 	// METODO COM LIST<> PARA IMPRIMIR PEÇAS CAPTURADAS NA TELA
 	private static void printCapturedPieces(List<ChessPiece> captured) {
-		// LAMBDa
-		List<ChessPiece> red = captured.stream().filter(x -> x.getColor() == Color.RED).collect(Collectors.toList());
+		// LAMBDA
 		List<ChessPiece> blue = captured.stream().filter(x -> x.getColor() == Color.BLUE).collect(Collectors.toList());
+		List<ChessPiece> red = captured.stream().filter(x -> x.getColor() == Color.RED).collect(Collectors.toList());
 		System.out.println("CAPTURED PIECES: ");
 		System.out.println("Red: ");
-		System.out.println(ANSI_RED);
+		System.out.println(ANSI_BLUE);
 		System.out.println(Arrays.toString(red.toArray()));
 		System.out.println(ANSI_RESET);
 		System.out.println("Blue: ");
-		System.out.println(ANSI_BLUE);
+		System.out.println(ANSI_RED);
 		System.out.println(Arrays.toString(blue.toArray()));
 		System.out.println(ANSI_RESET);
-	}
-
-	private static void printPiece(ChessPiece piece, boolean background) {
-	
-			if (background) {
-				System.out.print(ANSI_GREEN_BACKGROUND);
-			}
-			if (piece == null) {
-				System.out.print("-" + ANSI_RESET);
-			}
-			else if (piece.getColor() == Color.BLUE) {
-				System.out.print(ANSI_RED + piece + ANSI_RESET);
-			}
-	
-			else {
-				System.out.print(ANSI_BLUE + piece + ANSI_RESET);
-			}
-			System.out.print(" ");
+		
 	}
 
 }

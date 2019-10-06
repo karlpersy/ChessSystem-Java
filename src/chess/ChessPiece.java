@@ -16,6 +16,9 @@ public ChessPiece(Board board, Color color) {
 public Color getColor() {
 	return color;
 }
+public ChessPosition getChessPosition() {
+	return ChessPosition.fromPosition(position);
+}
 //OPERAÇÃO PARA TESTAR SE A POSIÇÃO DE MOVIMENTO ESTÁ VAZIA OU SE TEM UMA PEÇA DO OPONENTE 
 protected boolean isThereOpponentPiece(Position position) {
 	ChessPiece pc = (ChessPiece)getBoard().piece(position);

@@ -29,44 +29,44 @@ public class Rook extends ChessPiece {
 				mat[posi.getRow()][posi.getColumn()] = true;
 				posi.setRow(posi.getRow() - 1);
 			}
-			// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+			/* TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
 			if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
-				mat[posi.getRow()][posi.getColumn()] = true;
+				mat[posi.getRow()][posi.getColumn()] = false;
 	
 			}
-			// TESTANDO MOVIMENTOS POSSIVEIS À ESQUERDA
+			TESTANDO MOVIMENTOS POSSIVEIS À ESQUERDA/*/ 
 			posi.setValues(position.getRow(), position.getColumn() - 1);
 			while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
 				mat[posi.getRow()][posi.getColumn()] = true;
 				posi.setColumn(posi.getColumn() - 1);
 			}
-			// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+			/*/ TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
 			if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
-				mat[posi.getRow()][posi.getColumn()] = true;
+				mat[posi.getRow()][posi.getColumn()] = false;
 	
 			}
-			// TESTANDO MOVIMENTOS POSSIVEIS À DIREITA
+			// TESTANDO MOVIMENTOS POSSIVEIS À DIREITA/*/ 
 			posi.setValues(position.getRow(), position.getColumn() + 1);
 			while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
 				mat[posi.getRow()][posi.getColumn()] = true;
 				posi.setColumn(posi.getColumn() + 1);
 			}
-			// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+			/*/ TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
 			if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
-				mat[posi.getRow()][posi.getColumn()] = true;
+				mat[posi.getRow()][posi.getColumn()] = false;
 	
 			}
-			// TESTANDO MOVIMENTOS POSSIVEIS ABAIXO
+			// TESTANDO MOVIMENTOS POSSIVEIS ABAIXO/*/ 
 			posi.setValues(position.getRow() + 1, position.getColumn());
-			while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
+			while(getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
 				mat[posi.getRow()][posi.getColumn()] = true;
 				posi.setRow(posi.getRow() + 1);
 			}
-			// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+			/*/  TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
 			if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
-				mat[posi.getRow()][posi.getColumn()] = true;
+				mat[posi.getRow()][posi.getColumn()] = false;
 	
-			}
+			}/*/ 
 		return mat;
 	}
 }
