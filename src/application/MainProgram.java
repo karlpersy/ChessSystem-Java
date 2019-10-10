@@ -14,12 +14,12 @@ public class MainProgram {
 
 	public static void main(String[] args) {
 
-		// INSTANCIAÇÃO PARA IMPRIMIR
+//INSTANCIAÇÃO PARA IMPRIMIR
 		Scanner sc = new Scanner(System.in);
 		ChessMatch chessMatch = new ChessMatch();
 		List<ChessPiece> captured = new ArrayList<>();
 
-		while (true) {
+		while (!chessMatch.getXequeMate()) {
 			try {
 				UI.clearScreen();
 				UI.printMatch(chessMatch, captured);
@@ -49,5 +49,7 @@ public class MainProgram {
 				sc.nextLine();
 			}
 		}
+		UI.clearScreen();
+		UI.printMatch(chessMatch, captured);
 	}
 }

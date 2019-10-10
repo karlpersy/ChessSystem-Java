@@ -17,14 +17,14 @@ public abstract class Piece {
 	public abstract boolean [][] possibleMoves();
 	
 	
-	//TEMPLATE METHOD PADROES DE PROJETO
-	//METODO QUE INDICA OS MOVIMENTOS POSSIVEIS PARA DETERMINADA PEÇA
-	//METODO QUE CHAMA UMA POSSIVEL IMPLEMENTAÇÃO DE ALGUMA SUBCLASSE CONCRETA DA CLASSE Piece
+//TEMPLATE METHOD PADROES DE PROJETO
+//METODO QUE INDICA OS MOVIMENTOS POSSIVEIS PARA DETERMINADA PEÇA
+//METODO QUE CHAMA UMA POSSIVEL IMPLEMENTAÇÃO DE ALGUMA SUBCLASSE CONCRETA DA CLASSE Piece
 	public boolean possibleMove(Position position) {
 		return possibleMoves()[position.getRow()][position.getColumn()];	
 	}
 	
-	//OPERAÇÃO PARA TESTAR SE AO MENOS 1 MOVIMENTO POSSIVEL
+//OPERAÇÃO PARA TESTAR SE AO MENOS 1 MOVIMENTO POSSIVEL
 	public boolean isThereAnyPossibleMove() {
 		boolean [][] mat = possibleMoves();
 		for (int i = 0; i<mat.length; i++) {

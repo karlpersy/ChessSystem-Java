@@ -16,6 +16,7 @@ public class ChessMatch {
 	private Color currentPlayer;
 	private Board board;
 	private boolean xeque;
+	private boolean xequeMate;
 
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -35,11 +36,16 @@ public class ChessMatch {
 	public Color getCurrentplayer() {
 		return currentPlayer;
 	}
+
 	public boolean getXeque() {
 		return xeque;
 	}
 
-	// METODO PARA RETORNAR A MATRIZ DE PEÇAS DO JOGO DE XADREZ
+	public boolean getXequeMate() {
+		return xequeMate;
+	}
+
+// METODO PARA RETORNAR A MATRIZ DE PEÇAS DO JOGO DE XADREZ
 	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
 		for (int i = 0; i < board.getRows(); i++) {
@@ -51,36 +57,49 @@ public class ChessMatch {
 		return mat;
 	}
 
-	// OPERAÇÃO QUE RETORNA OS MOVIMENTOS POSSIVEIS PARA A PEÇA
+// OPERAÇÃO QUE RETORNA OS MOVIMENTOS POSSIVEIS PARA A PEÇA
 	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
 		Position position = sourcePosition.toPosition();
 		// VALIDANDO POSIÇÕES
 		validateSourcePosition(position);
 		return board.piece(position).possibleMoves();
 	}
+	// CHAMANDO PROXIMO JOGADOR
+		private void nextTurnPlayer() {
+			turn++;
+			currentPlayer = (currentPlayer == Color.BLUE) ? Color.RED : Color.BLUE;
+		}
 
-	// VALIDANDO POSIÇÕES E VALIDANDO MOVIMENTOS DE ORIGEM
+// VALIDANDO POSIÇÕES E VALIDANDO MOVIMENTOS DE ORIGEM
 	public ChessPiece perfomChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target);
-		//TESTE PARA SABER SE O JOGADOR COLOCOU SUA RAINHA(Queen)EM XEQUE
-		if (testXeque (currentPlayer)) {
+		// TESTE PARA SABER SE O JOGADOR COLOCOU SUA RAINHA(Queen)EM XEQUE
+		if (testXeque(currentPlayer)) {
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("You can't put yourself in check");
 		}
-		//FUNÇÃO PARA SABER SE O JOGADOR FICOU EM XEQUE COM O MOVIMENTO FEITO
+		// FUNÇÃO PARA SABER SE O JOGADOR FICOU EM XEQUE COM O MOVIMENTO FEITO
 		xeque = (testXeque(opponent(currentPlayer))) ? true : false;
+		if  (testXequeMate(opponent(currentPlayer))) {
+			xequeMate = true;
+		}
+		else {
 		// CHAMANDO PROXIMO JOGADOR DEPOIS DE EXECUTAR A JOGADA
 		nextTurnPlayer();
+		}
 		return (ChessPiece) capturedPiece;
+		
 	}
 
-	// MOVIMENTO DAS PEÇAS (POSIÇÃO DE ORIGEM PARA POSIÇÃO DE DESTINO)
+// MOVIMENTO DAS PEÇAS (POSIÇÃO DE ORIGEM PARA POSIÇÃO DE DESTINO)
 	private Piece makeMove(Position source, Position target) {
-		Piece pc = board.removePiece(source);
+		//CASTING DOWNCASTING
+		ChessPiece pc = (ChessPiece)board.removePiece(source);
+		pc.increaseMoveCount();
 		Piece capturedPiece = board.removePiece(target);
 		board.placePiece(pc, target);
 		if (capturedPiece != null) {
@@ -90,9 +109,11 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 
-	// METODO CRIADO PARA EVITAR QUE O JOGADOR COLOQUE SUA RAINHA(Queen) EM XEQUE
+// METODO PARA DESFAZER O MOVIMENTO CASO O JOGADOR COLOQUE SUA RAINHA(Queen) EM
+	// XEQUE
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
-		Piece pc = board.removePiece(target);
+		ChessPiece pc = (ChessPiece)board.removePiece(target);
+		pc.decreaseMoveCount();
 		board.placePiece(pc, source);
 		if (capturedPiece != null) {
 			board.placePiece(capturedPiece, target);
@@ -101,7 +122,7 @@ public class ChessMatch {
 		}
 	}
 
-	// VALIDANDO AS POSIÇÕES DE ORIGEM
+// VALIDANDO AS POSIÇÕES DE ORIGEM
 	private void validateSourcePosition(Position position) {
 		if (!board.thereIsAPiece(position)) {
 			throw new ChessException("There is no piece on source position!");
@@ -123,10 +144,12 @@ public class ChessMatch {
 		}
 	}
 
+//METODO QUE DEVOLVE O OPONENTE (BLUE OR RED)
 	private Color opponent(Color color) {
 		return (color == Color.BLUE) ? Color.RED : Color.BLUE;
 	}
 
+//METODO PARA FAZER VARREDURA E LOCALIZA O REI DO OPONENTE
 	private ChessPiece king(Color color) {
 		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == color)
 				.collect(Collectors.toList());
@@ -137,7 +160,8 @@ public class ChessMatch {
 		}
 		throw new IllegalStateException("There is no " + color + " king on the board!");
 	}
- //METODO PARA TESTAR SE O JOGADOR ESTÁ EM XEQUE
+
+// METODO PARA TESTAR SE O JOGADOR ESTÁ EM XEQUE
 	private boolean testXeque(Color color) {
 		Position kingPosition = king(color).getChessPosition().toPosition();
 		List<Piece> opponentPieces = piecesOnTheBoard.stream()
@@ -151,32 +175,53 @@ public class ChessMatch {
 		}
 		return false;
 	}
+//METODO PARA TESTAR SE A PEÇA ESTÁ EM XEQUE ANTES DO XEQUE MATE 
+	private boolean testXequeMate(Color color) {
+		if (!testXeque(color)) {
+			return false;
+		}
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece) x).getColor() == color)
+				.collect(Collectors.toList());
+		//FAZ A VARREDURA PARA IDENTIFICAR SE HÁ ALGUM MOVIMENTO E SE NÃO É UM MOVIMENTO QUE PODE DAR XEQUE MATE
+		for (Piece pc : list) {
+			boolean[][] mat = pc.possibleMoves();
+			for (int i = 0; i < board.getRows(); i++) {
+				for (int j = 0; j < board.getColumns(); j++) {
+					if (mat[i][j]) {
+						//MUDA A PEÇA DE POSIÇÃO
+						Position source = ((ChessPiece) pc).getChessPosition().toPosition();
+						Position target = new Position(i, j);
+						Piece capturedPiece = makeMove(source, target);
+						boolean testXeque = testXeque(color);
+						undoMove(source, target, capturedPiece);
+						if (!testXeque) {
+							return false;
+
+						}
+					}
+				}
+
+			}
+		}
+		return true;
+	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 		piecesOnTheBoard.add(piece);
 	}
 
-	// CHAMANDO PROXIMO JOGADOR
-	private void nextTurnPlayer() {
-		turn++;
-		currentPlayer = (currentPlayer == Color.BLUE) ? Color.RED : Color.BLUE;
-	}
 
+
+//COLOCANDO AS PEÇAS
 	public void initialSetup() {
-		placeNewPiece('c', 2, new Rook(board, Color.BLUE));
-		placeNewPiece('c', 1, new Rook(board, Color.BLUE));
-		placeNewPiece('d', 2, new Rook(board, Color.BLUE));
-		placeNewPiece('e', 2, new Rook(board, Color.BLUE));
-		placeNewPiece('e', 1, new Rook(board, Color.BLUE));
+		placeNewPiece('a', 1, new Rook(board, Color.BLUE));
 		placeNewPiece('d', 1, new King(board, Color.BLUE));
+		placeNewPiece('h', 1, new Rook(board, Color.BLUE));
 
-		placeNewPiece('c', 7, new Rook(board, Color.RED));
-		placeNewPiece('c', 8, new Rook(board, Color.RED));
-		placeNewPiece('d', 7, new Rook(board, Color.RED));
-		placeNewPiece('e', 7, new Rook(board, Color.RED));
-		placeNewPiece('e', 8, new Rook(board, Color.RED));
+		placeNewPiece('a', 8, new Rook(board, Color.RED));
 		placeNewPiece('d', 8, new King(board, Color.RED));
+		placeNewPiece('h', 8, new Rook(board, Color.RED));
 
 	}
 }

@@ -11,7 +11,6 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
 
-//METODO RESPONSAVEL POR IMPRIMIR AS LINHAS E COLUNAS NA TELA
 public class UI {
 
 	public static final String ANSI_RESET = "\u001B[0m";
@@ -33,26 +32,31 @@ public class UI {
 	public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
 	public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
-	// METODO PARA LIMPAR A TELA DEPOIS DE MOVER A PEÇA //...StarckOverlow
+// METODO PARA LIMPAR A TELA DEPOIS DE MOVER A PEÇA //...StarckOverlow
 	public static void clearScreen() {
 		System.out.println("\033[H\033[2J");
 		System.out.flush();
 	}
 
-	// METODO PARA INICIAR UMA NOVA PARTIDA (IMPRIMINDO NA TELA UMA NEW MATCH)
+// METODO PARA INICIAR UMA NOVA PARTIDA (IMPRIMINDO NA TELA UMA NEW MATCH)
 	public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
 		printBoard(chessMatch.getPieces());
 		System.out.println();
 		printCapturedPieces(captured);
 		System.out.println();
 		System.out.println("Number play " + chessMatch.getTurn() + " LET'S GO!");
-		System.out.println("It's your turn to play player: " + chessMatch.getCurrentplayer());
-		if (chessMatch.getXeque()) {
-			System.out.println("CHECK!");
+		if (!chessMatch.getXequeMate()) {
+			System.out.println("It's your turn to play player: " + chessMatch.getCurrentplayer());
+			if (chessMatch.getXeque()) {
+				System.out.println("CHECK!");
+			}
+		} else {
+			System.out.println("CheckMate!");
+			System.out.println("Winner: " + chessMatch.getCurrentplayer());
 		}
 	}
 
-	// METODO PARA LER A POSIÇÃO DO XADREZ(CONVERTENDO PARA INTEIRO)
+// METODO PARA LER A POSIÇÃO DO XADREZ(CONVERTENDO PARA INTEIRO)
 	public static ChessPosition readChessPosittion(Scanner sc) {
 		try {
 			String s = sc.nextLine();
@@ -63,6 +67,7 @@ public class UI {
 			throw new InputMismatchException("ERROR! INVALID POSITION! Choose between a1 and h8");
 		}
 	}
+
 //IMPRIME O XADREZ COM AS PEÇAS
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int i = 0; i < pieces.length; i++) {
@@ -75,7 +80,8 @@ public class UI {
 		System.out.println("  a b c d e f g h");
 
 	}
-	//IMPRIME NOVAMENTE MOSTRANDO OS MOVIMENTOS POSSIVEIS
+
+//IMPRIME NOVAMENTE MOSTRANDO OS MOVIMENTOS POSSIVEIS
 	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -89,6 +95,7 @@ public class UI {
 
 	}
 
+//TESTE PARA IDENTIFICAR AS POSIÇOES EM QUE A PEÇA PODE SER MOVIMENTADA
 	private static void printPiece(ChessPiece piece, boolean background) {
 
 		if (background) {
@@ -110,7 +117,7 @@ public class UI {
 		System.out.print(" ");
 	}
 
-	// METODO COM LIST<> PARA IMPRIMIR PEÇAS CAPTURADAS NA TELA
+// METODO COM LIST<> PARA IMPRIMIR PEÇAS CAPTURADAS NA TELA
 	private static void printCapturedPieces(List<ChessPiece> captured) {
 		// LAMBDA
 		List<ChessPiece> blue = captured.stream().filter(x -> x.getColor() == Color.BLUE).collect(Collectors.toList());
@@ -124,7 +131,7 @@ public class UI {
 		System.out.println(ANSI_RED);
 		System.out.println(Arrays.toString(blue.toArray()));
 		System.out.println(ANSI_RESET);
-		
+
 	}
 
 }
