@@ -5,11 +5,11 @@ import board.Position;
 import chess.ChessPiece;
 import chess.Color;
 
-public class Rook extends ChessPiece {
+public class Queen extends ChessPiece {
 
-	public Rook(Board board, Color color) {
+	public Queen(Board board, Color color) {
 		super(board, color);
-
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -17,7 +17,6 @@ public class Rook extends ChessPiece {
 		boolean[][] mat = new boolean[getBoard().getRows()][getBoard().getColumns()];
 
 		Position posi = new Position(0, 0);
-
 		// TESTANDO MOVIMENTOS POSSIVEIS ACIMA
 		posi.setValues(position.getRow() - 1, position.getColumn());
 		while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
@@ -62,11 +61,55 @@ public class Rook extends ChessPiece {
 			mat[posi.getRow()][posi.getColumn()] = false;
 
 		}
+		// TESTANDO MOVIMENTOS POSSIVEIS NOROESTE (ACIMA, ESQUERDA)
+		posi.setValues(position.getRow() - 1, position.getColumn() - 1);
+		while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = true;
+			posi.setValues(posi.getRow() - 1, posi.getColumn() - 1);
+		}
+		// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+		if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = false;
+		}
+		// TESTANDO MOVIMENTOS POSSIVEIS NORDESTE (ACIMA, DIREITA)
+		posi.setValues(position.getRow() - 1, position.getColumn() + 1);
+		while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = true;
+			posi.setValues(posi.getRow() - 1, posi.getColumn() + 1);
+		}
+		// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+		if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = false;
+
+		}
+		// TESTANDO MOVIMENTOS POSSIVEIS SUDESTE (ABAIXO, DIREITA) |_
+		posi.setValues(position.getRow() + 1, position.getColumn() + 1);
+		while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = true;
+			posi.setValues(posi.getRow() + 1, posi.getColumn() + 1);
+		}
+		// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+		if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = false;
+
+		}
+		// TESTANDO MOVIMENTOS POSSIVEIS SUDOESTE (ABAIXO, ESQUERDA) _|
+		posi.setValues(position.getRow() + 1, position.getColumn() - 1);
+		while (getBoard().positionExists(posi) && !getBoard().thereIsAPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = true;
+			posi.setValues(posi.getRow() + 1, posi.getColumn() - 1);
+		}
+		// TESTANDO SE HÁ PEÇAS DO OPONENTE NA POSIÇÃO
+		if (getBoard().positionExists(posi) && isThereOpponentPiece(posi)) {
+			mat[posi.getRow()][posi.getColumn()] = false;
+
+		}
 		return mat;
 	}
 
 	@Override
 	public String toString() {
-		return "R";
+		return "Q";
 	}
+
 }

@@ -43,7 +43,6 @@ public class UI {
 		printBoard(chessMatch.getPieces());
 		System.out.println();
 		printCapturedPieces(captured);
-		System.out.println();
 		System.out.println("Number play " + chessMatch.getTurn() + " LET'S GO!");
 		if (!chessMatch.getXequeMate()) {
 			System.out.println("It's your turn to play player: " + chessMatch.getCurrentplayer());
