@@ -1,5 +1,6 @@
 package chess;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class ChessMatch {
 	private boolean xeque;
 	private boolean xequeMate;
 	private ChessPiece enPassantVulnerable;
+	private ChessPiece promoted;
 
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -53,6 +55,10 @@ public class ChessMatch {
 	public ChessPiece getEnPassantVulnerable() {
 		return enPassantVulnerable;
 
+	}
+
+	public ChessPiece getPromoted() {
+		return promoted;
 	}
 
 // METODO PARA RETORNAR A MATRIZ DE PEÇAS DO JOGO DE XADREZ
@@ -95,6 +101,15 @@ public class ChessMatch {
 		}
 		// REFERÊNCIA DA PEÇA FOI MOVIDA
 		ChessPiece movedPiece = (ChessPiece) board.piece(target);
+		// JOGADA ESPECIAL (PROMOTED)
+		promoted = null;
+		if (movedPiece instanceof Pawn) {
+			if ((movedPiece.getColor() == Color.BLUE && target.getRow() == 0)
+					|| (movedPiece.getColor() == Color.RED && target.getRow() == 7)) {
+				promoted = (ChessPiece) board.piece(target);
+				promoted = replacePromotedPiece("Q");
+			}
+		}
 		// FUNÇÃO PARA SABER SE O JOGADOR FICOU EM XEQUE COM O MOVIMENTO FEITO
 		xeque = (testXeque(opponent(currentPlayer))) ? true : false;
 		if (testXequeMate(opponent(currentPlayer))) {
@@ -112,6 +127,34 @@ public class ChessMatch {
 			enPassantVulnerable = null;
 		return (ChessPiece) capturedPiece;
 
+	}
+
+	public ChessPiece replacePromotedPiece(String type) {
+		if (promoted == null) {
+			throw new IllegalStateException("There is not piece to be promoted");
+
+		}
+		if (!type.equals("B") && !type.equals("H") && !type.equals("R") && !type.equals("Q")) {
+			throw new InvalidParameterException("Invalid type for promoted");
+		}
+		Position posi = promoted.getChessPosition().toPosition();
+		Piece pc = board.removePiece(posi);
+		piecesOnTheBoard.remove(pc);
+		ChessPiece newPiece = newPiece(type, promoted.getColor());
+		board.placePiece(newPiece, posi);
+		piecesOnTheBoard.add(newPiece);
+		return newPiece;
+	}
+//METODO AUXILIAR PARA INSTANCIAR A PEÇA ESPECIFICA DA JOGADA
+
+	private ChessPiece newPiece(String type, Color color) {
+		if (type.equals("B"))
+			return new Bishop(board, color);
+		if (type.equals("H"))
+			return new Horse(board, color);
+		if (type.equals("R"))
+			return new Rook(board, color);
+		return new Queen(board, color);
 	}
 
 // MOVIMENTO DAS PEÇAS (POSIÇÃO DE ORIGEM PARA POSIÇÃO DE DESTINO)

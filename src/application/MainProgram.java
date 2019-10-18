@@ -36,9 +36,14 @@ public class MainProgram {
 				ChessPosition target = UI.readChessPosittion(sc);
 
 				ChessPiece capturedPiece = chessMatch.perfomChessMove(source, target);
-					if (capturedPiece !=null){
-						captured.add(capturedPiece);
-					}
+				if (capturedPiece != null) {
+					captured.add(capturedPiece);
+				}
+				if (chessMatch.getPromoted() != null) {
+					System.out.println("Enter piece for promotion (B/H/R/Q)");
+					String type = sc.nextLine();
+					chessMatch.replacePromotedPiece(type);
+				}
 
 			} catch (ChessException CE) {
 				System.out.println(CE.getMessage());
